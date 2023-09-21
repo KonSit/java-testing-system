@@ -1,7 +1,5 @@
 package base.expected;
 
-import base.pairs.Pair;
-
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
