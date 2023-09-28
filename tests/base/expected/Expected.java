@@ -17,7 +17,7 @@ public sealed abstract class Expected<T, E extends Exception> {
         }
         //noinspection RedundantIfStatement
         if (e1.getClass() == e2.getClass()
-                && e1.getMessage().equals(e2.getMessage())
+                // && e1.getMessage().equals(e2.getMessage())
                 && errorEquals(e1.getCause(), e2.getCause())) {
             // TODO: add stacktrace comparing.
             return true;
@@ -128,6 +128,11 @@ public sealed abstract class Expected<T, E extends Exception> {
         @Override
         public E getError() {
             return error;
+        }
+
+        @Override
+        public String toString() {
+            return error.toString();
         }
     }
 
