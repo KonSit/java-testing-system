@@ -125,7 +125,7 @@ public class TripleExpressionTest extends BasicExpressionTest<TripleExpressionTe
                 )
         ));
         //noinspection UnnecessaryUnaryMinus
-        testCases.add(new TestInfo((x, y, z) -> z / (10 + x) * -1 + -x  / (-2 - y - 14) + (y + (x + -z)), "((((z / (10 + x)) * -1) + (-(x) / ((-2 - y) - 14))) + (y + (x + -(z))))", () ->
+        testCases.add(new TestInfo((x, y, z) -> z / (10 + x) * -1 + -x / (-2 - y - 14) + (y + (x + -z)), "((((z / (10 + x)) * -1) + (-(x) / ((-2 - y) - 14))) + (y + (x + -(z))))", () ->
                 new Add(
                         new Add(
                                 new Multiply(
@@ -162,17 +162,18 @@ public class TripleExpressionTest extends BasicExpressionTest<TripleExpressionTe
         ));
     }
 
+    private static final List<Integer> checkRange = IntStream.concat(
+            IntStream.rangeClosed(-10, 10),
+            IntStream.concat(
+                    IntStream.rangeClosed(Integer.MIN_VALUE, Integer.MIN_VALUE + 3),
+                    IntStream.rangeClosed(Integer.MAX_VALUE - 3, Integer.MAX_VALUE)
+            )
+    ).boxed().toList();
+
     @Test
-    public void testValues() {
+    public void testTripleValues() {
         for (final TestInfo test : testCases) {
             final TripleExpression expression = test.expressionSupplier().get();
-            final List<Integer> checkRange = IntStream.concat(
-                    IntStream.rangeClosed(-10, 10),
-                    IntStream.concat(
-                            IntStream.rangeClosed(Integer.MIN_VALUE, Integer.MIN_VALUE + 3),
-                            IntStream.rangeClosed(Integer.MAX_VALUE - 3, Integer.MAX_VALUE)
-                    )
-            ).boxed().toList();
             for (int i : checkRange) {
                 for (int j : checkRange) {
                     for (int k : checkRange) {
