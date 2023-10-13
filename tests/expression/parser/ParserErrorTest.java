@@ -54,10 +54,10 @@ public class ParserErrorTest extends ParserTest {
         checkError("x * min y", "operator following operator 1");
         checkError("xmaxminz", "operator following operator 2");
 
-        checkError("x m      y", "Underwritten min/max 1");
-        checkError("x mi     y", "Underwritten min 2");
-        checkError("x m n    y", "Underwritten min 3");
-        checkError("x ma     y", "Underwritten max 2");
-        checkError("x m x    y", "Underwritten max 3");
+        checkError("x m      y", "underwritten min/max 1");
+        checkError("x mi     y", "underwritten min 2");
+        checkError("x m n    y", "underwritten min 3");
+        checkError("x ma     y", "underwritten max 2");
+        checkError("x m x    y", "underwritten max 3");
     }
 }
