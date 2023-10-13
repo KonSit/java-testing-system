@@ -176,6 +176,8 @@ public class ParserTest {
     public void testSimple() {
         checkParse(new Add(new Variable("x"), new Const(7)), "x + 7");
         checkParse(new Subtract(new Const(2), new Const(5)), "2 -5");
+        checkParse(new Negate(new Negate(new Negate(new Variable("y")))), "---y");
+        checkParse(new Subtract(new Const(5), new Negate(new Negate(new Variable("y")))), "5---y");
         checkParse(new Multiply(new Const(7), new Variable("z")), " \t 7*\t\tz");
         checkParse(new Divide(new Variable("x"), new Negate(new Variable("z"))), " x/-z ");
         checkParse(new Min(new Variable("y"), new Variable("z")), " ( y min z ) ");
@@ -215,79 +217,82 @@ public class ParserTest {
         );
     }
 
-    private String generateExpr(double toOp, double toBr) {
+    private String generateExpr(double toOp, double toBr, double toNg) {
         StringBuilder sb = new StringBuilder(randomWhitespaces(3));
-        generateE(sb, toOp, toBr);
+        generateE(sb, toOp, toBr, toNg);
         sb.append(randomWhitespaces(3));
         return sb.toString();
     }
 
-    private void generateE(StringBuilder sb, double toOp, double toBr) {
+    private void generateE(StringBuilder sb, double toOp, double toBr, double toNg) {
         double rnd = random.nextDouble(0, 1);
         if (rnd < toOp) {
-            generateE(sb, toOp, toBr);
+            generateE(sb, toOp, toBr, toNg);
             sb.append(randomWhitespaces(3));
             sb.append("min");
             sb.append(randomWhitespaces(3));
-            generateM(sb, toOp, toBr);
+            generateM(sb, toOp, toBr, toNg);
         } else if (rnd < toOp * 2) {
-            generateE(sb, toOp, toBr);
+            generateE(sb, toOp, toBr, toNg);
             sb.append(randomWhitespaces(3));
             sb.append("max");
             sb.append(randomWhitespaces(3));
-            generateM(sb, toOp, toBr);
+            generateM(sb, toOp, toBr, toNg);
         } else {
-            generateM(sb, toOp, toBr);
+            generateM(sb, toOp, toBr, toNg);
         }
     }
 
-    private void generateM(StringBuilder sb, double toOp, double toBr) {
+    private void generateM(StringBuilder sb, double toOp, double toBr, double toNg) {
         double rnd = random.nextDouble(0, 1);
         if (rnd < toOp) {
-            generateM(sb, toOp, toBr);
+            generateM(sb, toOp, toBr, toNg);
             sb.append(randomWhitespaces(3));
             sb.append("+");
             sb.append(randomWhitespaces(3));
-            generateS(sb, toOp, toBr);
+            generateS(sb, toOp, toBr, toNg);
         } else if (rnd < toOp * 2) {
-            generateM(sb, toOp, toBr);
+            generateM(sb, toOp, toBr, toNg);
             sb.append(randomWhitespaces(3));
             sb.append("-");
             sb.append(randomWhitespaces(3));
-            generateS(sb, toOp, toBr);
+            generateS(sb, toOp, toBr, toNg);
         } else {
-            generateS(sb, toOp, toBr);
+            generateS(sb, toOp, toBr, toNg);
         }
     }
 
-    private void generateS(StringBuilder sb, double toOp, double toBr) {
+    private void generateS(StringBuilder sb, double toOp, double toBr, double toNg) {
         double rnd = random.nextDouble(0, 1);
         if (rnd < toOp) {
-            generateS(sb, toOp, toBr);
+            generateS(sb, toOp, toBr, toNg);
             sb.append(randomWhitespaces(3));
             sb.append("*");
             sb.append(randomWhitespaces(3));
-            generateA(sb, toOp, toBr);
+            generateA(sb, toOp, toBr, toNg);
         } else if (rnd < toOp * 2) {
-            generateS(sb, toOp, toBr);
+            generateS(sb, toOp, toBr, toNg);
             sb.append(randomWhitespaces(3));
             sb.append("/");
             sb.append(randomWhitespaces(3));
-            generateA(sb, toOp, toBr);
+            generateA(sb, toOp, toBr, toNg);
         } else {
-            generateA(sb, toOp, toBr);
+            generateA(sb, toOp, toBr, toNg);
         }
     }
 
-    private void generateA(StringBuilder sb, double toOp, double toBr) {
+    private void generateA(StringBuilder sb, double toOp, double toBr, double toNg) {
         double rnd = random.nextDouble(0, 1);
         if (rnd < toBr) {
             sb.append('(');
             sb.append(randomWhitespaces(3));
-            generateE(sb, toOp, toBr);
+            generateE(sb, toOp, toBr, toNg);
             sb.append(randomWhitespaces(3));
             sb.append(')');
-        } else if (rnd < (1 - toOp) / 2) {
+        } else if (rnd < toBr + toNg) {
+            sb.append('-');
+            generateE(sb, toOp, toBr, toNg);
+        } else if (rnd < (1 - toBr - toNg) / 2) {
             sb.append(random.nextInt());
         } else {
             sb.append(switch (random.nextInt(3)) {
@@ -301,28 +306,28 @@ public class ParserTest {
     @Test
     public void testRandom1() {
         for (int i = 0; i < 5000; i++) {
-            checkParse(generateExpr(.05, .05));
+            checkParse(generateExpr(.05, .05, .05));
         }
     }
 
     @Test
     public void testRandom2() {
         for (int i = 0; i < 5000; i++) {
-            checkParse(generateExpr(.15, .2));
+            checkParse(generateExpr(.15, .1, .1));
         }
     }
 
     @Test
     public void testRandom3() {
         for (int i = 0; i < 5000; i++) {
-            checkParse(generateExpr(.3, .05));
+            checkParse(generateExpr(.3, .025, .025));
         }
     }
 
     @Test
     public void testRandom4() {
         for (int i = 0; i < 5000; i++) {
-            checkParse(generateExpr(.1, .35));
+            checkParse(generateExpr(.1, .15, .2));
         }
     }
 
