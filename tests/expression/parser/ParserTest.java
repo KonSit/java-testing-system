@@ -21,7 +21,7 @@ public class ParserTest {
     private static final Pattern tokenPattern = Pattern.compile("max|min|x|y|z|-?\\d++|\\*|/|\\+|-|\\(|\\)");
     private final Random random = new Random(8572957661108402L);
 
-    private static TripleExpression parse(final String data) {
+    protected static TripleExpression parse(final String data) {
         return new ArithmeticParser(new StringCharSource(data)).parse();
     }
 
@@ -175,7 +175,7 @@ public class ParserTest {
     @Test
     public void testSimple() {
         checkParse(new Add(new Variable("x"), new Const(7)), "x + 7");
-        checkParse(new Subtract(new Const(2), new Variable("y")), "2-y");
+        checkParse(new Subtract(new Const(2), new Const(5)), "2 -5");
         checkParse(new Multiply(new Const(7), new Variable("z")), " \t 7*\t\tz");
         checkParse(new Divide(new Variable("x"), new Negate(new Variable("z"))), " x/-z ");
         checkParse(new Min(new Variable("y"), new Variable("z")), " ( y min z ) ");
