@@ -7,7 +7,7 @@ package expression;
  */
 public interface ToParenthesisedString {
     /**
-     * Convert an expression into a full-bracket form. All brackets is round.
+     * Convert an expression into a full-bracket form. All brackets are round.
      * @return string containing full-bracket form.
      */
     default String toParenthesisedString() {

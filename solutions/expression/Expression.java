@@ -12,5 +12,7 @@ public interface Expression extends ToParenthesisedString {
      * @param variableValue variable value.
      * @return expression computation result.
      */
+
     int evaluate(int variableValue);
+    boolean equals(Object obj);
 }
